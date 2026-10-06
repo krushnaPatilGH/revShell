@@ -5,7 +5,7 @@ Then it tries to stabalise it currently with python, more options to be added la
 ## Usage
 - `-l` : listen address
 - `-p` : listen port
-
+- `ctrl + ]` : To exit the script after a connection is made as ctrl + c is sent to the target as well  
 ## Example
 ```
 python3 ./main -l 127.0.0.1 -p 8888
