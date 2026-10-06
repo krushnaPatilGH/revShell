@@ -8,6 +8,10 @@ import termios
 import tty
 import argparse
 
+GREEN = "\033[92m"
+RESET = "\033[0m"
+RED = "\033[91m"
+
 class Sock:
     def __init__(self, sock, address):
         self.sock = sock
@@ -21,7 +25,7 @@ class Sock:
             return b""
 
         except (ConnectionResetError, BrokenPipeError):
-            print("\n[-] Connection closed")
+            print(f"\n{RED}[-] Connection closed{RESET}")
             return None
 
 
@@ -32,7 +36,7 @@ class Sock:
         try:
             self.sock.sendall(data)
         except (ConnectionResetError, BrokenPipeError):
-            print("\n[-] Connection closed")
+            print(f"\n{RED}[-] Connection closed{RESET}")
 
     def close(self):
         self.sock.close()
@@ -50,9 +54,9 @@ class Shell:
         self.server.bind((self.address, self.port))
         self.server.listen(1)
         
-        print(f"listening on {self.address}:{self.port}")
+        print(f"{GREEN}listening on {self.address}:{self.port}")
         session, host = self.server.accept()
-        print(f"connection from {host}")
+        print(f"connection from {host}{RESET}")
         session.settimeout(1)
         self.sock = Sock(session, host)
     
@@ -107,7 +111,7 @@ class Shell:
             self.sock.close()
             self.server.close()
 
-            print("\n[*] Connection closed")
+            print(f"\n{GREEN}[*] Connection closed{RESET}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
