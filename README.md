@@ -8,5 +8,5 @@ Then it tries to stabalise it currently with python, more options to be added la
 - `ctrl + ]` : To exit the script after a connection is made as ctrl + c is sent to the target as well  
 ## Example
 ```
-python3 ./revShell -l 127.0.0.1 -p 8888
+python3 ./revShell.py -l 127.0.0.1 -p 8888
 ```
