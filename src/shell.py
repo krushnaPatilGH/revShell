@@ -8,6 +8,8 @@ import termios
 import tty
 from src.stabalize import stable
 from src.colours import GREEN, RESET, RED
+from src.escalate import Escalate
+
 
 class Sock:
     def __init__(self, sock, address):
@@ -58,11 +60,13 @@ class Shell:
         self.sock = Sock(session, host)
     
     def terminal(self):
+ 
+        esc = Escalate(self)
+        esc.scan()
+
         SHELL = stable(self)
         SHELL.inspect()
         SHELL.upgrade()
-
-
         old_settings = termios.tcgetattr(sys.stdin)
 
         try:
