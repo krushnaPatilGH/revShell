@@ -2,6 +2,8 @@
 
 import argparse
 from src.shell import Shell
+import threading
+import time
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
@@ -25,6 +27,11 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     handler = Shell(args.listen, args.port)
-    handler.listen()
-    handler.terminal()
+    threading.Thread(
+        target=handler.listen,
+        daemon=True
+    ).start()
+    time.sleep(0.3)
+
+    handler.shell()
 
